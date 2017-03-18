@@ -71,6 +71,8 @@
       <DependentUpon>BasicGameCanvas.xaml</DependentUpon>
     </Compile>
     <Compile Include="GameCore\GameDirector.cs" />
+    <Compile Include="GameCore\GameScene.cs" />
+    <Compile Include="GameImpl\SceneStart.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

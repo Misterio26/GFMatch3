@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -14,7 +13,6 @@ namespace GFMatch3.GameCore {
     /// в реальной жизни так, конечно, лучше не делать</para>
     /// </summary>
     public partial class BasicGameCanvas : Canvas {
-
 //        private float positonDelta = 0;
 //        private int fpsCounter = 0;
 //        private int fpsNow = 0;
@@ -31,7 +29,8 @@ namespace GFMatch3.GameCore {
             InitializeComponent();
         }
 
-        private void OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs) {
+        private void OnIsVisibleChanged(object sender,
+            DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs) {
             if (IsVisible) {
                 StartGameLoop();
             } else {
@@ -39,7 +38,6 @@ namespace GFMatch3.GameCore {
             }
         }
 
-        
 
         protected override void OnRender(DrawingContext dc) {
             if (IsGameLoopActive) {
@@ -51,7 +49,7 @@ namespace GFMatch3.GameCore {
             base.OnRender(dc);
 
             if (IsGameLoopActive) {
-                GameRender();
+                GameRender(dc);
             }
 
             GameUpdatedAllowed = false;
@@ -112,12 +110,21 @@ namespace GFMatch3.GameCore {
         }
 
         private void GameUpdate() {
-
+            GameDirector.Instance.Update();
         }
 
-        private void GameRender() {
+        private void GameRender(DrawingContext dc) {
+            // вычисляем масштаб и актуальную высоту, чтобы подстроиться под GameDirector.ANCHORED_SCREEN_WIDTH
+            double scaleX = ActualWidth / GameDirector.AnchoredScreenWidth;
+            int useHeight = (int) Math.Ceiling(ActualHeight / scaleX);
+            double scaleY = ActualHeight / useHeight;
 
+            // применяем мастаб и вызываем отрисовку
+            dc.PushTransform(new ScaleTransform(scaleX, scaleY));
+            GameDirector.Instance.Render(dc, useHeight);
+//            dc.DrawRectangle(new SolidColorBrush(Color.FromScRgb(1, 1, 0, 0)), null,
+//                new Rect(0, 0, 1919, useHeight - 1));
+            dc.Pop();
         }
     }
-
 }
