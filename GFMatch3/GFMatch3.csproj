@@ -70,8 +70,17 @@
     <Compile Include="GameCore\BasicGameCanvas.xaml.cs">
       <DependentUpon>BasicGameCanvas.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GameCore\GameAction.cs" />
     <Compile Include="GameCore\GameDirector.cs" />
+    <Compile Include="GameCore\GameObject.cs" />
+    <Compile Include="GameCore\GameRenderer.cs" />
     <Compile Include="GameCore\GameScene.cs" />
+    <Compile Include="GameCore\GameTransform.cs" />
+    <Compile Include="GameImpl\BoardGameConfig.cs" />
+    <Compile Include="GameImpl\GAAnimationPuls.cs" />
+    <Compile Include="GameImpl\GOBoard.cs" />
+    <Compile Include="GameImpl\GOBoardElement.cs" />
+    <Compile Include="GameImpl\GRBoardElementCircle.cs" />
     <Compile Include="GameImpl\SceneStart.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

@@ -13,17 +13,14 @@ namespace GFMatch3.GameCore {
     /// в реальной жизни так, конечно, лучше не делать</para>
     /// </summary>
     public partial class BasicGameCanvas : Canvas {
-//        private float positonDelta = 0;
-//        private int fpsCounter = 0;
-//        private int fpsNow = 0;
-//        private long prevMilliseconds = 0;
 
-        private long LastGameLoopCallTime;
+        private long _lastGameLoopCallTime;
+        private long _lastUpdateTime;
 
-        private bool IsGameLoopActive;
-        private DispatcherOperation GameLoopActiveDispatcher;
+        private bool _isGameLoopActive;
+        private DispatcherOperation _gameLoopActiveDispatcher;
 
-        private bool GameUpdatedAllowed;
+        private bool _gameUpdatedAllowed;
 
         public BasicGameCanvas() {
             InitializeComponent();
@@ -40,77 +37,65 @@ namespace GFMatch3.GameCore {
 
 
         protected override void OnRender(DrawingContext dc) {
-            if (IsGameLoopActive) {
-                if (GameUpdatedAllowed) {
+            if (_isGameLoopActive) {
+                if (_gameUpdatedAllowed) {
                     GameUpdate();
                 }
             }
 
             base.OnRender(dc);
 
-            if (IsGameLoopActive) {
+            if (_isGameLoopActive) {
                 GameRender(dc);
             }
 
-            GameUpdatedAllowed = false;
-//            long milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-//            LastGameLoopCallTime = milliseconds;
-//
-//            if (milliseconds - prevMilliseconds >= 1000) {
-//                fpsNow = fpsCounter;
-//                fpsCounter = 0;
-//                prevMilliseconds = milliseconds;
-//
-//                Debug.WriteLine("FPS = " + fpsNow);
-//            }
-//            fpsCounter++;
-//
-//            positonDelta += 1;
-//
-//            dc.PushTransform(new ScaleTransform(4, 4));
-//            Pen pen = new Pen(new SolidColorBrush(Color.FromScRgb(1, 1, 0, 0)), 3);
-//            dc.DrawEllipse(null, pen, new Point(10 + positonDelta, 10), 10, 10);
-//            dc.Pop();
-//
-//            InvokeGameLoopTry();
+            _gameUpdatedAllowed = false;
         }
 
         private void TryGameLoopOnTimer() {
-            GameLoopActiveDispatcher = null;
+            _gameLoopActiveDispatcher = null;
 
             long milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-            if (milliseconds - LastGameLoopCallTime < 10 && !GameUpdatedAllowed) {
+            if (milliseconds - _lastGameLoopCallTime < 10 && !_gameUpdatedAllowed) {
                 InvokeGameLoopTry();
                 return;
             }
 
-            LastGameLoopCallTime = milliseconds;
-            GameUpdatedAllowed = true;
+            _lastGameLoopCallTime = milliseconds;
+            _gameUpdatedAllowed = true;
 
             InvalidateVisual();
+            InvokeGameLoopTry();
         }
 
         private void InvokeGameLoopTry() {
-            GameLoopActiveDispatcher = Dispatcher.InvokeAsync(TryGameLoopOnTimer, DispatcherPriority.ContextIdle);
+            _gameLoopActiveDispatcher = Dispatcher.InvokeAsync(TryGameLoopOnTimer, DispatcherPriority.ContextIdle);
         }
 
         private void StartGameLoop() {
-            if (IsGameLoopActive) return;
-            IsGameLoopActive = true;
-            LastGameLoopCallTime = 0;
+            if (_isGameLoopActive) return;
+            _isGameLoopActive = true;
+            _lastGameLoopCallTime = 0;
+            _lastUpdateTime = 0;
             InvokeGameLoopTry();
         }
 
         private void StopGameLoop() {
-            if (!IsGameLoopActive) return;
-            IsGameLoopActive = false;
-            if (GameLoopActiveDispatcher != null) {
-                GameLoopActiveDispatcher.Abort();
+            if (!_isGameLoopActive) return;
+            _isGameLoopActive = false;
+            if (_gameLoopActiveDispatcher != null) {
+                _gameLoopActiveDispatcher.Abort();
             }
         }
 
         private void GameUpdate() {
-            GameDirector.Instance.Update();
+            long deltaTime = 0;
+            long milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+            if (_lastUpdateTime > 0) {
+                deltaTime = milliseconds - _lastUpdateTime;
+            }
+            _lastUpdateTime = milliseconds;
+            GameDirector.Instance.Update(deltaTime);
         }
 
         private void GameRender(DrawingContext dc) {
@@ -122,8 +107,6 @@ namespace GFMatch3.GameCore {
             // применяем мастаб и вызываем отрисовку
             dc.PushTransform(new ScaleTransform(scaleX, scaleY));
             GameDirector.Instance.Render(dc, useHeight);
-//            dc.DrawRectangle(new SolidColorBrush(Color.FromScRgb(1, 1, 0, 0)), null,
-//                new Rect(0, 0, 1919, useHeight - 1));
             dc.Pop();
         }
     }
