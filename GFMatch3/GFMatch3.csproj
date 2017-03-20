@@ -71,6 +71,7 @@
       <DependentUpon>BasicGameCanvas.xaml</DependentUpon>
     </Compile>
     <Compile Include="GameCore\GameAction.cs" />
+    <Compile Include="GameCore\GameActionSavedState.cs" />
     <Compile Include="GameCore\GameDirector.cs" />
     <Compile Include="GameCore\GameObject.cs" />
     <Compile Include="GameCore\GameRenderer.cs" />
@@ -78,9 +79,18 @@
     <Compile Include="GameCore\GameTransform.cs" />
     <Compile Include="GameImpl\BoardGameConfig.cs" />
     <Compile Include="GameImpl\GAAnimationPuls.cs" />
+    <Compile Include="GameImpl\GABoardElement.cs" />
+    <Compile Include="GameImpl\GAColorableOnClick.cs" />
+    <Compile Include="GameImpl\GATransitionTransform.cs" />
     <Compile Include="GameImpl\GOBoard.cs" />
     <Compile Include="GameImpl\GOBoardElement.cs" />
+    <Compile Include="GameImpl\GOTimer.cs" />
     <Compile Include="GameImpl\GRBoardElementCircle.cs" />
+    <Compile Include="GameImpl\GRText.cs" />
+    <Compile Include="GameImpl\IColorable.cs" />
+    <Compile Include="GameImpl\IRected.cs" />
+    <Compile Include="GameImpl\SceneBoard.cs" />
+    <Compile Include="GameImpl\SceneFinish.cs" />
     <Compile Include="GameImpl\SceneStart.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -105,6 +115,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Resource Include="Fonts\Quicksand-Regular.ttf" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

@@ -1,14 +1,19 @@
 ﻿using System;
+using System.Windows;
 using GFMatch3.GameCore;
 
 namespace GFMatch3.GameImpl {
     public class GOBoard : GameObject {
-        private GameObject[,] _cells = new GameObject[BoardGameConfig.BoardSize, BoardGameConfig.BoardSize];
+        private GOBoardElement[,] _cells = new GOBoardElement[BoardGameConfig.BoardSize, BoardGameConfig.BoardSize];
+
+        private bool _hasSelectedCell;
+        private int _selectedCellX;
+        private int _selectedCellY;
 
         public GOBoard() {
             for (int x = 0; x < BoardGameConfig.BoardSize; x++) {
                 for (int y = 0; y < BoardGameConfig.BoardSize; y++) {
-                    GameObject boardEl = new GOBoardElement();
+                    GOBoardElement boardEl = new GOBoardElement();
                     boardEl.Transform.X = BoardGameConfig.BoardCellSize / 2 + BoardGameConfig.BoardCellSize * x;
                     boardEl.Transform.Y = BoardGameConfig.BoardCellSize / 2 + BoardGameConfig.BoardCellSize * y;
                     _cells[x, y] = boardEl;
@@ -32,7 +37,32 @@ namespace GFMatch3.GameImpl {
                 gameObject.Transform.Y = boardY;
                 gameObject.Transform.ScaleX = boardScale;
                 gameObject.Transform.ScaleY = boardScale;
+
+                if (GameDirector.Instance.IsMouseClick) {
+                    Point clickPosition = gameObject.SceneToLocal(GameDirector.Instance.MousePosition);
+                    if (clickPosition.X >= 0 && clickPosition.X < boardSizeCfg
+                        && clickPosition.Y >= 0 && clickPosition.Y < boardSizeCfg) {
+
+                        int cellX = (int) (clickPosition.X / BoardGameConfig.BoardCellSize);
+                        int cellY = (int) (clickPosition.Y / BoardGameConfig.BoardCellSize);
+                        ((GOBoard) gameObject).SelectCell(cellX, cellY);
+                    }
+                }
             }, null, null));
+        }
+
+        public void SelectCell(int x, int y) {
+            if (_hasSelectedCell) {
+                _cells[_selectedCellX, _selectedCellY].Selected = false;
+                if (_selectedCellX == x && _selectedCellY == y) {
+                    _hasSelectedCell = false;
+                    return;
+                }
+            }
+            _hasSelectedCell = true;
+            _selectedCellX = x;
+            _selectedCellY = y;
+            _cells[x, y].Selected = true;
         }
     }
 }

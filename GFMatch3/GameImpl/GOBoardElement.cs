@@ -1,31 +1,29 @@
-﻿using System.Diagnostics;
-using GFMatch3.GameCore;
+﻿using GFMatch3.GameCore;
 
 namespace GFMatch3.GameImpl {
     public class GOBoardElement : GameObject {
+        private GATransitionTransform _selectionTransition;
+
+        private GameObject _animatablePart = new GameObject();
+
+        private bool _selected;
+
+        public bool Selected {
+            get { return _selected; }
+            set {
+                _selected = value;
+                _selectionTransition.SetState(_selected);
+            }
+        }
 
         public GOBoardElement() {
-            Renderer = new GRBoardElementCircle();
             AddAction(new GABoardElement());
-            AddAction(new GAAnimationPuls());
+
+            _selectionTransition = new GATransitionTransform(GameTransform.Default, GameTransform.Default * 1.35, 0.100);
+
+            _animatablePart.Renderer = new GRBoardElementCircle();
+            _animatablePart.AddAction(_selectionTransition);
+            AddChild(_animatablePart);
         }
-
-        private class GABoardElement : GameAction {
-            public override void OnStart() {
-                base.OnStart();
-                Debug.WriteLine("GABoardElement OnStart");
-            }
-
-            public override void OnUpdate() {
-                base.OnUpdate();
-//                Debug.WriteLine("GABoardElement OnStart");
-            }
-
-            public override void OnStop() {
-                base.OnStop();
-                Debug.WriteLine("GABoardElement OnStop");
-            }
-        }
-
     }
 }

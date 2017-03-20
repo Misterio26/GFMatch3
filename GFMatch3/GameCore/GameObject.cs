@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Media;
 
 namespace GFMatch3.GameCore {
     public class GameObject : IComparable<GameObject> {
-        public readonly GameTransform Transform = new GameTransform();
+        public GameTransform Transform = GameTransform.Default;
 
         public GameRenderer Renderer;
 
@@ -32,9 +33,9 @@ namespace GFMatch3.GameCore {
             if (_actions.Count > 0) {
                 _tmpActionsList.AddRange(_actions);
                 foreach (GameAction action in _tmpActionsList) {
-                    action.Prepare(this);
+                    GameActionSavedState savedState = action.Prepare(this);
                     action.Update();
-                    action.Free();
+                    action.Free(savedState);
                 }
                 _tmpActionsList.Clear();
             }
@@ -50,11 +51,15 @@ namespace GFMatch3.GameCore {
             if (_children.Count == 0 && Renderer == null) return;
             _children.Sort();
 
-            Matrix matrix = new Matrix();
-            matrix.Rotate(Transform.Angle);
-            matrix.Scale(Transform.ScaleX, Transform.ScaleY);
-            matrix.Translate(Transform.X, Transform.Y);
-            dc.PushTransform(new MatrixTransform(matrix));
+            bool needTransfrom = !Transform.IsDefault();
+
+            if (needTransfrom) {
+                Matrix matrix = new Matrix();
+                matrix.Rotate(Transform.Angle);
+                matrix.Scale(Transform.ScaleX, Transform.ScaleY);
+                matrix.Translate(Transform.X, Transform.Y);
+                dc.PushTransform(new MatrixTransform(matrix));
+            }
 
             if (Renderer != null) {
                 Renderer.OnDraw(dc);
@@ -63,7 +68,10 @@ namespace GFMatch3.GameCore {
             foreach (GameObject child in _children) {
                 child.Render(dc);
             }
-            dc.Pop();
+
+            if (needTransfrom) {
+                dc.Pop();
+            }
         }
 
         public int CompareTo(GameObject other) {
@@ -135,5 +143,27 @@ namespace GFMatch3.GameCore {
             if (!_actions.Remove(gameAction)) return;
             gameAction.TryRemoveParent(this);
         }
+
+        public Point SceneToLocal(Point point) {
+            Matrix matrix = Matrix.Identity;
+
+            GameObject curObject = this;
+            while (curObject != null) {
+                if (!curObject.Transform.IsDefault()) {
+                    Matrix tmpMatrix = Matrix.Identity;
+                    tmpMatrix.Rotate(curObject.Transform.Angle);
+                    tmpMatrix.Scale(curObject.Transform.ScaleX, curObject.Transform.ScaleY);
+                    tmpMatrix.Translate(curObject.Transform.X, curObject.Transform.Y);
+                    tmpMatrix.Invert();
+
+                    matrix.Prepend(tmpMatrix);
+                }
+
+                curObject = curObject._parent == null ? null : curObject._parent.Target as GameObject;
+            }
+
+            return matrix.Transform(point);
+        }
+
     }
 }

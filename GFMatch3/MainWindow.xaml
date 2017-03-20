@@ -6,7 +6,9 @@
         xmlns:gameCore="clr-namespace:GFMatch3.GameCore"
         mc:Ignorable="d"
         Title="MainWindow" Width="1280" Height="720">
-
     <gameCore:BasicGameCanvas x:Name="GameCanvas" />
+<!--<Grid>-->
+<!--        <Label x:Name="label" Content="Label" HorizontalAlignment="Left" Margin="731,347,0,0" VerticalAlignment="Top" FontFamily="/GFMatch3;component/#Pacifico"/>-->
 
+<!--    </Grid>-->
 </Window>

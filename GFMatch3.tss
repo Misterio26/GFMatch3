@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<ArrayOfArrayOfArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ArrayOfArrayOfString>
+    <ArrayOfString>
+      <string>D:\Work\projects\GameForest\Match3\Src\game_forest_match3\GFMatch3\GFMatch3\obj\Debug\GameCore\BasicGameCanvas.g.i.cs</string>
+    </ArrayOfString>
+    <ArrayOfString>
+      <string>D:\Work\projects\GameForest\Match3\Src\game_forest_match3\GFMatch3\GFMatch3\GameCore\BasicGameCanvas.xaml</string>
+      <string>D:\Work\projects\GameForest\Match3\Src\game_forest_match3\GFMatch3\GFMatch3\GameCore\BasicGameCanvas.xaml.cs</string>
+    </ArrayOfString>
+    <ArrayOfString>
+      <string>D:\Work\projects\GameForest\Match3\Src\game_forest_match3\GFMatch3\GFMatch3\App.xaml</string>
+    </ArrayOfString>
+    <ArrayOfString>
+      <string>D:\Work\projects\GameForest\Match3\Src\game_forest_match3\GFMatch3\GFMatch3\MainWindow.xaml</string>
+      <string>D:\Work\projects\GameForest\Match3\Src\game_forest_match3\GFMatch3\GFMatch3\MainWindow.xaml.cs</string>
+    </ArrayOfString>
+  </ArrayOfArrayOfString>
+</ArrayOfArrayOfArrayOfString>

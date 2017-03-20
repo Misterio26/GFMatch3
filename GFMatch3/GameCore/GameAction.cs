@@ -9,12 +9,14 @@ namespace GFMatch3.GameCore {
         private WeakReference _parent;
         private bool _activated;
 
-        public void Prepare(GameObject gameObject) {
+        public GameActionSavedState Prepare(GameObject gameObject) {
+            GameActionSavedState actionSavedState = new GameActionSavedState(_gameObject);
             _gameObject = gameObject;
+            return actionSavedState;
         }
 
-        public void Free() {
-            _gameObject = null;
+        public void Free(GameActionSavedState savedState) {
+            _gameObject = savedState.GameObject;
         }
 
         public void Update() {
@@ -50,11 +52,9 @@ namespace GFMatch3.GameCore {
             if (_activated) {
                 _activated = false;
 
-                GameObject wasObject = _gameObject;
-                Prepare(fromParent);
+                GameActionSavedState savedState = Prepare(fromParent);
                 OnStop();
-                Free();
-                _gameObject = wasObject;
+                Free(savedState);
             }
         }
 

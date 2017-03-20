@@ -14,8 +14,8 @@ namespace GFMatch3.GameImpl {
                 ? ((TO_SCALE - 1.0) * delta + 1.0)
                 : ((1.0 - TO_SCALE) * (delta - 1.0) + TO_SCALE);
 
-            GameObject.Transform.ScaleX = scale;
-            GameObject.Transform.ScaleY = scale;
+            GameObject.Transform.ScaleX *= scale;
+            GameObject.Transform.ScaleY *= scale;
         }
     }
 }

@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reflection;
+using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 
 namespace GFMatch3.GameCore {
     public class GameDirector {
@@ -16,6 +19,12 @@ namespace GFMatch3.GameCore {
 
         private readonly String _startupStageClassRef;
 
+        private long _fpsLastTime;
+        private long _fpsCounter;
+        private long _fps;
+        private long _fpsMaxDeltaTime;
+        private long _fpsMinDeltaTime;
+
         private GameScene _activeGameScene;
         private GameScene _incomingGameScene;
 
@@ -26,12 +35,43 @@ namespace GFMatch3.GameCore {
         private double _deltaTime;
         public double DeltaTime => _deltaTime;
 
+        private Point _mousePosition;
+        public Point MousePosition => _mousePosition;
+
+        private bool _isMouseClick;
+        public bool IsMouseClick => _isMouseClick;
+
+        private bool _isMouseDown;
+        public bool IsMouseDown => _isMouseDown;
+
+        private bool _isMouseUp;
+        public bool IsMouseUp => _isMouseUp;
+
+
         private GameDirector(String startupStageClassRef) {
             _startupStageClassRef = startupStageClassRef;
         }
 
-        public void Update(long deltaTime) {
+        public void Update(long deltaTime, int screenHeight) {
+            long milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+            if (milliseconds - _fpsLastTime >= 1000) {
+                _fps = _fpsCounter;
+
+                Debug.WriteLine("_fps = " + _fps);
+                Debug.WriteLine("_fpsMaxDeltaTime = " + _fpsMaxDeltaTime);
+                Debug.WriteLine("_fpsMinDeltaTime " + _fpsMinDeltaTime);
+
+                _fpsLastTime = milliseconds;
+                _fpsCounter = 0;
+                _fpsMaxDeltaTime = long.MinValue;
+                _fpsMinDeltaTime = long.MaxValue;
+            }
+            _fpsCounter++;
+            _fpsMaxDeltaTime = Math.Max(_fpsMaxDeltaTime, deltaTime);
+            _fpsMinDeltaTime = Math.Min(_fpsMinDeltaTime, deltaTime);
+
             _deltaTime = deltaTime / 1000.0;
+            _currentScreenHeight = screenHeight;
 
             if (!_created) {
                 _created = true;
@@ -51,6 +91,8 @@ namespace GFMatch3.GameCore {
             }
 
             _activeGameScene.Update();
+
+            OnResetFlagsAfterUpdate();
         }
 
         public void Render(DrawingContext dc, int screenHeight) {
@@ -60,13 +102,34 @@ namespace GFMatch3.GameCore {
             _activeGameScene.Render(dc);
         }
 
+        private void OnResetFlagsAfterUpdate() {
+            _isMouseClick = false;
+            _isMouseUp = false;
+            _isMouseDown = false;
+        }
+
         private void OnCreate() {
             GameScene startupGameScene = (GameScene) Assembly.GetExecutingAssembly()
                 .CreateInstance(_startupStageClassRef);
-            SetStage(startupGameScene);
+            SetScene(startupGameScene);
         }
 
-        public void SetStage(GameScene newScene) {
+        public void MouseClick(Point mouseClickPosition) {
+            _isMouseClick = true;
+            _mousePosition = mouseClickPosition;
+        }
+
+        public void MouseDown(Point mouseDownPosition) {
+            _isMouseDown = true;
+            _mousePosition = mouseDownPosition;
+        }
+
+        public void MouseUp(Point mouseUpPosition) {
+            _isMouseUp = true;
+            _mousePosition = mouseUpPosition;
+        }
+
+        public void SetScene(GameScene newScene) {
             // устанавливаемая сцена становится активной не сразу, а только вначале игрового цикла
             _incomingGameScene = newScene;
         }

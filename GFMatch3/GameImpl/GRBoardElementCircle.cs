@@ -8,7 +8,7 @@ namespace GFMatch3.GameImpl {
         private readonly Brush _brush = new SolidColorBrush(Colors.Red);
 
         public override void OnDraw(DrawingContext dc) {
-            dc.DrawEllipse(_brush, null, new Point(0, 0), BoardGameConfig.BoardCellSize / 2, BoardGameConfig.BoardCellSize / 2);
+            dc.DrawEllipse(_brush, null, new Point(0, 0), BoardGameConfig.BoardCellSize / 2 - 10, BoardGameConfig.BoardCellSize / 2 - 10);
         }
     }
 }
