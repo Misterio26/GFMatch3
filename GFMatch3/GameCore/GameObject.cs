@@ -176,5 +176,9 @@ namespace GFMatch3.GameCore {
             return matrix.Transform(point);
         }
 
+        public T GetScene<T>() where T : GameScene {
+            return !InScene ? null : GameDirector.Instance.GetScene<T>();
+        }
+
     }
 }

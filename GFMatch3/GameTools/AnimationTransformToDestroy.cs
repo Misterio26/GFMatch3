@@ -1,8 +1,9 @@
-﻿using GFMatch3.GameCore;
+﻿using System;
+using GFMatch3.GameCore;
 using GFMatch3.GameImpl;
 
 namespace GFMatch3.GameTools {
-    public class AnimationTransformToDestory : GAAnimation {
+    public class AnimationTransformToDestroy : GAAnimation {
         private readonly GameTransform _toTransform;
         private GameTransform _fromTransform;
         private readonly double _transitionTime;
@@ -12,10 +13,12 @@ namespace GFMatch3.GameTools {
 
         private bool _destroy;
 
-        public AnimationTransformToDestory(GameTransform toTransform, double transitionTime):this(toTransform, transitionTime, false) {
+        public Action OnDestroy;
+
+        public AnimationTransformToDestroy(GameTransform toTransform, double transitionTime):this(toTransform, transitionTime, false) {
         }
 
-        public AnimationTransformToDestory(GameTransform toTransform, double transitionTime, bool blockeable):base(blockeable) {
+        public AnimationTransformToDestroy(GameTransform toTransform, double transitionTime, bool blockeable):base(blockeable) {
             _toTransform = toTransform;
             _transitionTime = transitionTime;
         }
@@ -28,6 +31,9 @@ namespace GFMatch3.GameTools {
             if (_destroy) {
                 GameObject.Transform = _currentTransform;
                 GameObject.RemoveFromParent();
+                if (OnDestroy != null) {
+                    OnDestroy();
+                }
                 return;
             }
             _workTime += GameDirector.Instance.DeltaTime;

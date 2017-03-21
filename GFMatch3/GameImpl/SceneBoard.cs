@@ -21,5 +21,9 @@ namespace GFMatch3.GameImpl {
             _score.Score++;
         }
 
+        public GOBoard GetBoard() {
+            return _board;
+        }
+
     }
 }

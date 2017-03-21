@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using GFMatch3.GameCore;
+using GFMatch3.GameTools;
 
 namespace GFMatch3.GameImpl {
     public class GOTimer : GameObject {
@@ -19,7 +20,9 @@ namespace GFMatch3.GameImpl {
                 gameObject.Transform.ScaleY = 1.5;
 
                 if (_timeLeft <= 0) {
-                    GameDirector.Instance.SetScene(new SceneFinish());
+                    if (!AnimationsManager.Instance.HasActiveBlockeableAnimations()) {
+                        GameDirector.Instance.SetScene(new SceneFinish());
+                    }
                 }
             }, null, null));
         }

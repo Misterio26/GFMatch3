@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using GFMatch3.GameCore;
+using GFMatch3.GameTools;
 
 namespace GFMatch3.GameImpl {
     public class GOBoard : GameObject {
@@ -17,6 +18,8 @@ namespace GFMatch3.GameImpl {
         private CellCoord _swapFromCellCoord;
         private CellCoord _swapToCellCoord;
 
+        private List<MovedEl> _lastMovedElements = new List<MovedEl>();
+
         public GOBoard() {
             GameRenderer renderer = new GameRenderer();
             Renderer = renderer;
@@ -27,7 +30,13 @@ namespace GFMatch3.GameImpl {
 
             for (int x = 0; x < BoardGameConfig.BoardSize; x++) {
                 for (int y = 0; y < BoardGameConfig.BoardSize; y++) {
-                    GOBoardElement boardEl = new BEGem(_random.Next(BoardGameConfig.ColoredTypes.Length));
+                    GOBoardElement boardEl;
+//                    if (_random.Next(5) == 1) {
+//                        boardEl = new BELine(_random.Next(BoardGameConfig.ColoredTypes.Length),
+//                            _random.Next(2) == 1);
+//                    } else {
+                    boardEl = new BEGem(_random.Next(BoardGameConfig.ColoredTypes.Length));
+//                    }
                     boardEl.Transform.X = BoardGameConfig.BoardCellSize / 2 + BoardGameConfig.BoardCellSize * x;
                     boardEl.Transform.Y = BoardGameConfig.BoardCellSize / 2 + BoardGameConfig.BoardCellSize * y;
                     boardEl.Transform.Z = x + y;
@@ -92,6 +101,10 @@ namespace GFMatch3.GameImpl {
 
                             return false;
                         }
+
+                        _lastMovedElements.Clear();
+                        _lastMovedElements.Add(new MovedEl(cellCoord, _selectedCell));
+                        _lastMovedElements.Add(new MovedEl(_selectedCell, cellCoord));
 
                         return true;
                     }
@@ -173,17 +186,68 @@ namespace GFMatch3.GameImpl {
         }
 
         public bool ActivateMatches(bool silent) {
-            HashSet<CellCoord> activateList = new HashSet<CellCoord>();
+            // простая активация всех подряд
+            List<ActivationEl[]> activateList = new List<ActivationEl[]>();
             ActivateMatchesByDirection(false, activateList);
             ActivateMatchesByDirection(true, activateList);
-            foreach (CellCoord cellCoord in activateList) {
-                ActivateElementInCell(cellCoord, silent);
+
+            List<ActivationEl> createBonuses = new List<ActivationEl>();
+
+            if (!silent) {
+                // дополнительная логика по определению спауна бонусов
+                // исходя из того, как была сделан уборка на предыдущем шаге
+                foreach (ActivationEl[] cellCoords in activateList) {
+                    if (cellCoords.Length >= 4) {
+                        // преоритетна та точка, что была сдвинута в текущей фазе
+                        ActivationEl spawnCoord = null;
+                        bool vertical = true;
+                        bool found = false;
+                        foreach (ActivationEl cellCoord in cellCoords) {
+                            foreach (MovedEl lastMovedElement in _lastMovedElements) {
+                                if (cellCoord.CellCoord == lastMovedElement.toCellCoord) {
+                                    spawnCoord = cellCoord;
+                                    vertical = (lastMovedElement.toCellCoord - lastMovedElement.fromCellCoord).X == 0;
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (found) break;
+                        }
+
+                        if (!found) {
+                            spawnCoord = cellCoords[0];
+                        }
+
+                        GOBoardElement lineElement = new BELine(spawnCoord.BoardElement.ColoredType, vertical);
+                        createBonuses.Add(new ActivationEl(spawnCoord.CellCoord, lineElement));
+                    }
+                }
+            }
+
+            // убираем все, что надо, с проверкой на быстро или нет там где бонусы появились
+            foreach (ActivationEl[] cellCoords in activateList) {
+                foreach (ActivationEl cellCoord in cellCoords) {
+                    bool fast = false;
+                    foreach (ActivationEl bonus in createBonuses) {
+                        if (bonus.CellCoord == cellCoord.CellCoord) {
+                            fast = true;
+                            break;
+                        }
+                    }
+
+                    ActivateElementInCell(cellCoord.CellCoord, silent, fast);
+                }
+            }
+
+            // спауним бонусы
+            foreach (ActivationEl bonus in createBonuses) {
+                TrySpawnElement(bonus.CellCoord, bonus.BoardElement);
             }
 
             return activateList.Count > 0;
         }
 
-        private void ActivateMatchesByDirection(bool swapSF, HashSet<CellCoord> activateList) {
+        private void ActivateMatchesByDirection(bool swapSF, List<ActivationEl[]> activateList) {
             for (int f = 0; f < BoardGameConfig.BoardSize; f++) {
                 int previousType = -1;
                 int previousTypeStartPosition = -1;
@@ -194,8 +258,12 @@ namespace GFMatch3.GameImpl {
 
                     if (previousType != curType || curType == -1) {
                         if (previousType >= 0 && matchesCounter >= BoardGameConfig.MinimalMatchesInRow) {
+                            ActivationEl[] cellCoords = new ActivationEl[s - previousTypeStartPosition];
+                            activateList.Add(cellCoords);
                             for (int i = previousTypeStartPosition; i < s; i++) {
-                                activateList.Add(new CellCoord(swapSF ? f : i, swapSF ? i : f));
+                                cellCoords[i - previousTypeStartPosition] = new ActivationEl(
+                                    new CellCoord(swapSF ? f : i, swapSF ? i : f),
+                                    _cells[swapSF ? f : i, swapSF ? i : f]);
                             }
                         }
                         matchesCounter = 1;
@@ -206,25 +274,29 @@ namespace GFMatch3.GameImpl {
                     }
                 }
                 if (previousType >= 0 && matchesCounter >= BoardGameConfig.MinimalMatchesInRow) {
+                    ActivationEl[] cellCoords = new ActivationEl[BoardGameConfig.BoardSize - previousTypeStartPosition];
+                    activateList.Add(cellCoords);
                     for (int i = previousTypeStartPosition; i < BoardGameConfig.BoardSize; i++) {
-                        activateList.Add(new CellCoord(swapSF ? f : i, swapSF ? i : f));
+                        cellCoords[i - previousTypeStartPosition] = new ActivationEl(
+                            new CellCoord(swapSF ? f : i, swapSF ? i : f), _cells[swapSF ? f : i, swapSF ? i : f]);
                     }
                 }
             }
         }
 
-        public void ActivateElementInCell(CellCoord cellCoord, bool silent) {
+        public void ActivateElementInCell(CellCoord cellCoord, bool silent, bool fast) {
             GOBoardElement boardElement = _cells[cellCoord.X, cellCoord.Y];
             _cells[cellCoord.X, cellCoord.Y] = null;
 
             if (silent) return;
 
             if (boardElement != null) {
-                boardElement.Activate();
+                boardElement.Activate(cellCoord, fast);
             }
         }
 
         public bool CondenseStep(bool silent) {
+            _lastMovedElements.Clear();
             bool hasHole = false;
             for (int y = BoardGameConfig.BoardSize - 1; y >= 0; y--) {
                 for (int x = 0; x < BoardGameConfig.BoardSize; x++) {
@@ -246,6 +318,7 @@ namespace GFMatch3.GameImpl {
                             boardEl.Transform.Z = x + y;
 
                             if (!silent) {
+                                _lastMovedElements.Add(new MovedEl(new CellCoord(x, y), new CellCoord(x, y - 1)));
                                 boardEl.AnimateTransitionFromCellToCell(new CellCoord(x, y - 1), new CellCoord(x, y));
                             }
                         }
@@ -262,6 +335,44 @@ namespace GFMatch3.GameImpl {
             }
         }
 
+        public void SpawnDestroyers(CellCoord cellCoord, bool vertical, int coloredType) {
+            GODestroyer destroyer1 = new GODestroyer(coloredType,
+                vertical ? GameMath.DirectionUp : GameMath.DirectionLeft);
+            destroyer1.Transform.X = BoardGameConfig.BoardCellSize / 2 + BoardGameConfig.BoardCellSize * cellCoord.X;
+            destroyer1.Transform.Y = BoardGameConfig.BoardCellSize / 2 + BoardGameConfig.BoardCellSize * cellCoord.Y;
+            destroyer1.Transform.Z = 100;
+            AddChild(destroyer1);
+
+            GODestroyer destroyer2 = new GODestroyer(coloredType,
+                vertical ? GameMath.DirectionDown : GameMath.DirectionRight);
+            destroyer2.Transform.X = BoardGameConfig.BoardCellSize / 2 + BoardGameConfig.BoardCellSize * cellCoord.X;
+            destroyer2.Transform.Y = BoardGameConfig.BoardCellSize / 2 + BoardGameConfig.BoardCellSize * cellCoord.Y;
+            destroyer2.Transform.Z = 100;
+            AddChild(destroyer2);
+        }
+
+        private void TrySpawnElement(CellCoord cellCoord, GOBoardElement boardElement) {
+            if (_cells[cellCoord.X, cellCoord.Y] != null) return;
+            _cells[cellCoord.X, cellCoord.Y] = boardElement;
+            AddChild(boardElement);
+
+            boardElement.Transform.X = BoardGameConfig.BoardCellSize / 2 + BoardGameConfig.BoardCellSize * cellCoord.X;
+            boardElement.Transform.Y = BoardGameConfig.BoardCellSize / 2 + BoardGameConfig.BoardCellSize * cellCoord.Y;
+            boardElement.Transform.Z = cellCoord.X + cellCoord.Y;
+        }
+
+        public void TryActivateUnderPoint(Point point) {
+            CellCoord cellCoord = new CellCoord(
+                (int) Math.Floor(point.X / BoardGameConfig.BoardCellSize),
+                (int) Math.Floor(point.Y / BoardGameConfig.BoardCellSize)
+            );
+            if (cellCoord.X < 0 || cellCoord.X >= BoardGameConfig.BoardSize
+                || cellCoord.Y < 0 || cellCoord.Y >= BoardGameConfig.BoardSize) {
+                return;
+            }
+            ActivateElementInCell(cellCoord, false, false);
+        }
+
         private void PrintDebug() {
             for (int y = 0; y < BoardGameConfig.BoardSize; y++) {
                 for (int x = 0; x < BoardGameConfig.BoardSize; x++) {
@@ -271,6 +382,26 @@ namespace GFMatch3.GameImpl {
                 Debug.WriteLine("");
             }
             Debug.WriteLine("");
+        }
+
+        private class ActivationEl {
+            public readonly CellCoord CellCoord;
+            public readonly GOBoardElement BoardElement;
+
+            public ActivationEl(CellCoord cellCoord, GOBoardElement boardElement) {
+                CellCoord = cellCoord;
+                BoardElement = boardElement;
+            }
+        }
+
+        private class MovedEl {
+            public readonly CellCoord toCellCoord;
+            public readonly CellCoord fromCellCoord;
+
+            public MovedEl(CellCoord toCellCoord, CellCoord fromCellCoord) {
+                this.toCellCoord = toCellCoord;
+                this.fromCellCoord = fromCellCoord;
+            }
         }
     }
 }

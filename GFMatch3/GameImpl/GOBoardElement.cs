@@ -41,11 +41,11 @@ namespace GFMatch3.GameImpl {
             );
         }
 
-        public void Activate() {
-            OnAtivate();
-            GameDirector.Instance.GetScene<SceneBoard>()?.AddScore();
+        public void Activate(CellCoord cellCoord, bool fast) {
+            OnActivate(cellCoord, fast);
+            GetScene<SceneBoard>()?.AddScore();
         }
 
-        public abstract void OnAtivate();
+        public abstract void OnActivate(CellCoord cellCoord, bool fast);
     }
 }

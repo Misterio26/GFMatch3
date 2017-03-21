@@ -10,6 +10,8 @@ namespace GFMatch3.GameImpl {
         public const double AnimationsCommonSpeed = 0.25;
         public const double AnimationsPlayerSpeed = 0.1;
 
+        public const double DestoryerTimeForCell = 0.2;
+
         public static readonly Color[] ColoredTypes = new Color[]
             {Colors.Red, Colors.Purple, Colors.Gold, Colors.ForestGreen, Colors.DeepSkyBlue};
     }
