@@ -1,29 +1,50 @@
 ﻿using GFMatch3.GameCore;
+using GFMatch3.GameTools;
 
 namespace GFMatch3.GameImpl {
-    public class GOBoardElement : GameObject {
-        private GATransitionTransform _selectionTransition;
+    public abstract class GOBoardElement : GameObject {
+        private AnimationTransformTransition _selectionTransformTransition;
 
-        private GameObject _animatablePart = new GameObject();
+        protected readonly GameObject AnimatablePart = new GameObject();
 
-        private bool _selected;
+        private int _coloredType;
+
+        public int ColoredType => _coloredType;
 
         public bool Selected {
-            get { return _selected; }
             set {
-                _selected = value;
-                _selectionTransition.SetState(_selected);
+                _selectionTransformTransition.SetToTo(value);
+                AnimatablePart.AddAction(_selectionTransformTransition);
             }
         }
 
-        public GOBoardElement() {
+        public GOBoardElement(int coloredType, GRBoardElement grBoardElement) {
+            _coloredType = coloredType;
             AddAction(new GABoardElement());
 
-            _selectionTransition = new GATransitionTransform(GameTransform.Default, GameTransform.Default * 1.35, 0.100);
-
-            _animatablePart.Renderer = new GRBoardElementCircle();
-            _animatablePart.AddAction(_selectionTransition);
-            AddChild(_animatablePart);
+            _selectionTransformTransition = new AnimationTransformTransition(GameTransform.Default,
+                GameTransform.Default * 1.35, BoardGameConfig.AnimationsPlayerSpeed);
+            AnimatablePart.Renderer = grBoardElement;
+            AddChild(AnimatablePart);
         }
+
+        public void AnimateTransitionFromCellToCell(CellCoord fromCell, CellCoord toCell) {
+            CellCoord reverseOffset = fromCell - toCell;
+
+            AnimationTransformTransition animationTransformTransition = new AnimationTransformTransition(new GameTransform(
+                reverseOffset.X * BoardGameConfig.BoardCellSize,
+                reverseOffset.Y * BoardGameConfig.BoardCellSize,
+                0, 0, 1, 1
+            ), GameTransform.Default, BoardGameConfig.AnimationsCommonSpeed, true);
+            AnimatablePart.AddAction(
+                animationTransformTransition
+            );
+        }
+
+        public void Activate() {
+            OnAtivate();
+        }
+
+        public abstract void OnAtivate();
     }
 }

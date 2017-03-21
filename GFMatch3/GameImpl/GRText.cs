@@ -3,9 +3,16 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
 using GFMatch3.GameCore;
+using GFMatch3.GameTools;
 
 namespace GFMatch3.GameImpl {
     public class GRText : GameRenderer, IColorable, IRected {
+
+        private static readonly Typeface GameFont = new Typeface(
+            new FontFamily(new Uri("pack://application:,,,/"), "./Fonts/#Quicksand"), FontStyles.Normal,
+            FontWeights.Regular, FontStretches.Normal
+        );
+
         private string _text;
         private FormattedText _textFormatted;
 
@@ -54,11 +61,6 @@ namespace GFMatch3.GameImpl {
                 _textFormatted.TextAlignment = _textAlignment;
             }
         }
-
-        private static readonly Typeface GameFont = new Typeface(
-            new FontFamily(new Uri("pack://application:,,,/"), "./Fonts/#Quicksand"), FontStyles.Normal,
-            FontWeights.Regular, FontStretches.Normal
-        );
 
         public GRText(string text, TextAlignment textAlignment, VerticalAlignment verticalAlignment) {
             _text = text;

@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using GFMatch3.GameCore;
+using GFMatch3.GameTools;
 
 namespace GFMatch3.GameImpl {
     public class SceneFinish : GameScene {
@@ -33,6 +34,7 @@ namespace GFMatch3.GameImpl {
             }, null, null));
             okButton.AddAction(new GAColorableOnClick());
             AddChild(okButton);
+            AddChild(new GOBackground());
         }
     }
 }

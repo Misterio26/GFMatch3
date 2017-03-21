@@ -62,11 +62,18 @@ namespace GFMatch3.GameCore {
             }
 
             if (Renderer != null) {
+                if (Renderer.HasClip) {
+                    dc.PushClip(new RectangleGeometry(Renderer.ClipArea));
+                }
                 Renderer.OnDraw(dc);
             }
 
             foreach (GameObject child in _children) {
                 child.Render(dc);
+            }
+
+            if (Renderer != null && Renderer.HasClip) {
+                dc.Pop();
             }
 
             if (needTransfrom) {
@@ -109,6 +116,10 @@ namespace GFMatch3.GameCore {
             if (!InScene) {
                 foreach (GameAction action in _actions.ToArray()) {
                     action.TryDeactivate(this);
+                }
+            } else {
+                foreach (GameAction action in _actions.ToArray()) {
+                    action.TryActivate(this);
                 }
             }
             // всем детям присвоим рекурсивно то же значение "в сцене"

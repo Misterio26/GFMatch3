@@ -4,6 +4,5 @@
              xmlns:local="clr-namespace:GFMatch3"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <FontFamily x:Key="NotoSans">pack://application:#Pacofico</FontFamily>
     </Application.Resources>
 </Application>

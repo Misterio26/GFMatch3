@@ -1,6 +1,6 @@
 ﻿using System.Windows.Media;
 
-namespace GFMatch3.GameImpl {
+namespace GFMatch3.GameTools {
     public interface IColorable {
         Color Color { set; }
     }

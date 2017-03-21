@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Media;
 using GFMatch3.GameCore;
+using GFMatch3.GameTools;
 
 namespace GFMatch3.GameImpl {
     public class GAColorableOnClick : GameAction {

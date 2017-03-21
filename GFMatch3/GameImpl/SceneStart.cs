@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using GFMatch3.GameCore;
+using GFMatch3.GameTools;
 
 namespace GFMatch3.GameImpl {
     public class SceneStart : GameScene {
@@ -25,6 +26,7 @@ namespace GFMatch3.GameImpl {
             }, null, null));
             _playButton.AddAction(new GAColorableOnClick());
             AddChild(_playButton);
+            AddChild(new GOBackground());
         }
     }
 }

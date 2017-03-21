@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace GFMatch3.GameImpl {
+namespace GFMatch3.GameTools {
     public interface IRected {
         Rect Rect { get; }
     }

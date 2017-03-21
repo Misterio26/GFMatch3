@@ -11,6 +11,7 @@ namespace GFMatch3.GameImpl {
             _time = new GOTimer();
             AddChild(_board);
             AddChild(_time);
+            AddChild(new GOBackground());
         }
 
     }

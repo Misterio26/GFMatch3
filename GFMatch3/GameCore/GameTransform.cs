@@ -1,6 +1,7 @@
 ﻿namespace GFMatch3.GameCore {
     public struct GameTransform {
         public static readonly GameTransform Default = new GameTransform(0, 0, 0, 0, 1, 1);
+        public static readonly GameTransform Zero = new GameTransform(0, 0, 0, 0, 0, 0);
 
         public double X;
         public double Y;

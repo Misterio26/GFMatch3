@@ -20,10 +20,7 @@ namespace GFMatch3.GameCore {
         }
 
         public void Update() {
-            if (!_activated) {
-                _activated = true;
-                OnStart();
-            }
+            TryActivate(null);
             OnUpdate();
         }
 
@@ -32,6 +29,9 @@ namespace GFMatch3.GameCore {
                 throw new Exception("GameAction allready added to GameObject");
             }
             _parent = new WeakReference(parent);
+            if (parent.InScene) {
+                TryActivate(parent);
+            }
         }
 
         public void TryRemoveParent(GameObject fromParent) {
@@ -46,6 +46,21 @@ namespace GFMatch3.GameCore {
             _parent = null;
 
             TryDeactivate(fromParent);
+        }
+
+        public void TryActivate(GameObject parent) {
+            if (!_activated) {
+                _activated = true;
+
+                GameActionSavedState savedState = new GameActionSavedState(null);
+                if (parent != null) {
+                    savedState = Prepare(parent);
+                }
+                OnStart();
+                if (parent != null) {
+                    Free(savedState);
+                }
+            }
         }
 
         public void TryDeactivate(GameObject fromParent) {
