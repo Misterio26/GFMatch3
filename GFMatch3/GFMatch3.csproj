@@ -90,6 +90,7 @@
     <Compile Include="GameImpl\GOBackground.cs" />
     <Compile Include="GameImpl\GOBoard.cs" />
     <Compile Include="GameImpl\GOBoardElement.cs" />
+    <Compile Include="GameImpl\GOScore.cs" />
     <Compile Include="GameImpl\GOTimer.cs" />
     <Compile Include="GameImpl\GRBackground.cs" />
     <Compile Include="GameImpl\GRBoardElement.cs" />

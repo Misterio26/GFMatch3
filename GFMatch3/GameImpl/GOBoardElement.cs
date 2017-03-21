@@ -43,6 +43,7 @@ namespace GFMatch3.GameImpl {
 
         public void Activate() {
             OnAtivate();
+            GameDirector.Instance.GetScene<SceneBoard>()?.AddScore();
         }
 
         public abstract void OnAtivate();
