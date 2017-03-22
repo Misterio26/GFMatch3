@@ -13,16 +13,31 @@ namespace GFMatch3.GameImpl {
             AddAction(new GameActionDelegated(gameObject => {
                     double boardSize = BoardGameConfig.BoardCellSize * BoardGameConfig.BoardSize;
                     double speed = BoardGameConfig.BoardCellSize / BoardGameConfig.DestoryerTimeForCell;
+
                     Point directionVect = GameMath.Directions[((GODestroyer) gameObject)._direction];
-                    gameObject.Transform.X += directionVect.X * GameDirector.Instance.DeltaTime * speed;
-                    gameObject.Transform.Y += directionVect.Y * GameDirector.Instance.DeltaTime * speed;
 
-                    Point nosePoint = new Point(
-                        gameObject.Transform.X + directionVect.X * (BoardGameConfig.BoardCellSize - 20) / 2,
-                        gameObject.Transform.Y + directionVect.Y * (BoardGameConfig.BoardCellSize - 20) / 2
-                    );
+                    double moveDistance = GameDirector.Instance.DeltaTime * speed;
 
-                    gameObject.GetScene<SceneBoard>()?.GetBoard()?.TryActivateUnderPoint(nosePoint);
+                    while (moveDistance > 0) {
+                        double distance;
+                        if (moveDistance > BoardGameConfig.BoardCellSize) {
+                            distance = BoardGameConfig.BoardCellSize;
+                            moveDistance -= BoardGameConfig.BoardCellSize;
+                        } else {
+                            distance = moveDistance;
+                            moveDistance = 0;
+                        }
+
+                        gameObject.Transform.X += directionVect.X * distance;
+                        gameObject.Transform.Y += directionVect.Y * distance;
+
+                        Point nosePoint = new Point(
+                            gameObject.Transform.X + directionVect.X * (BoardGameConfig.BoardCellSize - 20) / 2,
+                            gameObject.Transform.Y + directionVect.Y * (BoardGameConfig.BoardCellSize - 20) / 2
+                        );
+
+                        gameObject.GetScene<SceneBoard>()?.GetBoard()?.TryActivateUnderPoint(nosePoint);
+                    }
 
                     if (gameObject.Transform.X < -BoardGameConfig.BoardCellSize
                         || gameObject.Transform.X > boardSize + BoardGameConfig.BoardCellSize
