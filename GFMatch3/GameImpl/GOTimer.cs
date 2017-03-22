@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Windows;
 using GFMatch3.GameCore;
 using GFMatch3.GameTools;
@@ -6,6 +7,10 @@ using GFMatch3.GameTools;
 namespace GFMatch3.GameImpl {
     public class GOTimer : GameObject {
         private double _timeLeft = BoardGameConfig.GameTime;
+
+        public double TimeLeft {
+            get { return _timeLeft; }
+        }
 
         public GOTimer() {
             Renderer = new GRText(_timeLeft.ToString(), TextAlignment.Center, VerticalAlignment.Top);
@@ -18,12 +23,6 @@ namespace GFMatch3.GameImpl {
                 gameObject.Transform.Y = 10;
                 gameObject.Transform.ScaleX = 1.5;
                 gameObject.Transform.ScaleY = 1.5;
-
-                if (_timeLeft <= 0) {
-                    if (!AnimationsManager.Instance.HasActiveBlockeableAnimations()) {
-                        GameDirector.Instance.SetScene(new SceneFinish());
-                    }
-                }
             }, null, null));
         }
     }

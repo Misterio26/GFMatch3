@@ -9,6 +9,14 @@ namespace GFMatch3.GameImpl {
 
             ((GOBoard) GameObject).TrySwapBack();
 
+            if (GameObject.GetScene<SceneBoard>()?.GetTimeLeft() <= 0) {
+                GameObject.AddAction(new GATimer(1, gameObject => {
+                    GameDirector.Instance.SetScene(new SceneFinish());
+                }));
+                RemoveFromParent();
+                return;
+            }
+
             if (GameDirector.Instance.IsMouseClick) {
                 int boardSizeCfg = BoardGameConfig.BoardCellSize * BoardGameConfig.BoardCellSize;
                 Point clickPosition = GameObject.SceneToLocal(GameDirector.Instance.MousePosition);
@@ -18,7 +26,7 @@ namespace GFMatch3.GameImpl {
                     int cellY = (int) (clickPosition.Y / BoardGameConfig.BoardCellSize);
 
                     if (((GOBoard) GameObject).SelectCell(new CellCoord(cellX, cellY))) {
-                        GameObject.AddAction(new BorderStateActionActivateMatches());
+                        GameObject.AddAction(new BoardStateActionActivateMatches());
                         RemoveFromParent();
                     }
                 }

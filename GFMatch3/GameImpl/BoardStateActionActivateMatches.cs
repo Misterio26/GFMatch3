@@ -2,7 +2,7 @@
 using GFMatch3.GameTools;
 
 namespace GFMatch3.GameImpl {
-    public class BorderStateActionActivateMatches : GameAction {
+    public class BoardStateActionActivateMatches : GameAction {
         public override void OnUpdate() {
             if (AnimationsManager.Instance.HasActiveBlockeableAnimations()) return;
 

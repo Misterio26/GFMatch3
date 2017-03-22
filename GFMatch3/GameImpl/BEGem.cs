@@ -11,7 +11,7 @@ namespace GFMatch3.GameImpl {
                 RemoveFromParent();
             } else {
                 AnimationTransformToDestroy animationTransformToDestroy = new AnimationTransformToDestroy(
-                    GameTransform.Zero, BoardGameConfig.AnimationsCommonSpeed, true);
+                    GameTransform.Zero, BoardGameConfig.AnimationsHideSpeed, true);
                 animationTransformToDestroy.OnDestroy = RemoveFromParent;
                 AnimatablePart.AddAction(animationTransformToDestroy);
             }

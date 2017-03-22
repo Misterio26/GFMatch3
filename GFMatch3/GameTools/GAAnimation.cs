@@ -1,7 +1,6 @@
 ﻿using GFMatch3.GameCore;
-using GFMatch3.GameTools;
 
-namespace GFMatch3.GameImpl {
+namespace GFMatch3.GameTools {
     public abstract class GAAnimation : GameAction {
 
         private readonly bool _blockeable;
@@ -10,7 +9,7 @@ namespace GFMatch3.GameImpl {
         }
 
         protected GAAnimation(bool blockeable) {
-            this._blockeable = blockeable;
+            _blockeable = blockeable;
         }
 
         public sealed override void OnUpdate() {

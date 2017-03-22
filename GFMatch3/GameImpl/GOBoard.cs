@@ -30,13 +30,7 @@ namespace GFMatch3.GameImpl {
 
             for (int x = 0; x < BoardGameConfig.BoardSize; x++) {
                 for (int y = 0; y < BoardGameConfig.BoardSize; y++) {
-                    GOBoardElement boardEl;
-//                    if (_random.Next(5) == 1) {
-//                        boardEl = new BELine(_random.Next(BoardGameConfig.ColoredTypes.Length),
-//                            _random.Next(2) == 1);
-//                    } else {
-                    boardEl = new BEGem(_random.Next(BoardGameConfig.ColoredTypes.Length));
-//                    }
+                    GOBoardElement boardEl = new BEGem(_random.Next(BoardGameConfig.ColoredTypes.Length));
                     boardEl.Transform.X = BoardGameConfig.BoardCellSize / 2 + BoardGameConfig.BoardCellSize * x;
                     boardEl.Transform.Y = BoardGameConfig.BoardCellSize / 2 + BoardGameConfig.BoardCellSize * y;
                     boardEl.Transform.Z = x + y;
@@ -69,7 +63,7 @@ namespace GFMatch3.GameImpl {
                 gameObject.Transform.ScaleY = boardScale;
             }, null, null));
 
-            // простой конечный автомат из BorderStateAction
+            // простой конечный автомат из BoardStateAction
             AddAction(new BoardStateActionPlayer());
         }
 
@@ -194,6 +188,8 @@ namespace GFMatch3.GameImpl {
             List<ActivationEl> createBonuses = new List<ActivationEl>();
 
             if (!silent) {
+                bool[,] bombsCheckGrid = new bool[BoardGameConfig.BoardSize, BoardGameConfig.BoardSize];
+
                 // дополнительная логика по определению спауна бонусов
                 // исходя из того, как была сделан уборка на предыдущем шаге
                 foreach (ActivationEl[] cellCoords in activateList) {
@@ -218,8 +214,23 @@ namespace GFMatch3.GameImpl {
                             spawnCoord = cellCoords[0];
                         }
 
-                        GOBoardElement lineElement = new BELine(spawnCoord.BoardElement.ColoredType, vertical);
-                        createBonuses.Add(new ActivationEl(spawnCoord.CellCoord, lineElement));
+                        if (cellCoords.Length == 4) {
+                            GOBoardElement lineElement = new BELine(spawnCoord.BoardElement.ColoredType, vertical);
+                            createBonuses.Add(new ActivationEl(spawnCoord.CellCoord, lineElement));
+                        } else {
+                            GOBoardElement bombElement = new BEBomb(spawnCoord.BoardElement.ColoredType);
+                            // бомбы преоритетнее
+                            createBonuses.Insert(0, new ActivationEl(spawnCoord.CellCoord, bombElement));
+                        }
+                    }
+
+                    foreach (ActivationEl cellCoord in cellCoords) {
+                        if (bombsCheckGrid[cellCoord.CellCoord.X, cellCoord.CellCoord.Y]) {
+                            GOBoardElement bombElement = new BEBomb(cellCoord.BoardElement.ColoredType);
+                            // бомбы преоритетнее
+                            createBonuses.Insert(0, new ActivationEl(cellCoord.CellCoord, bombElement));
+                        }
+                        bombsCheckGrid[cellCoord.CellCoord.X, cellCoord.CellCoord.Y] = true;
                     }
                 }
             }
@@ -282,6 +293,12 @@ namespace GFMatch3.GameImpl {
                     }
                 }
             }
+        }
+
+        public void TryActivateElementInCell(CellCoord cellCoord, bool silent, bool fast) {
+            if (cellCoord.X < 0 || cellCoord.X >= BoardGameConfig.BoardSize || cellCoord.Y < 0 ||
+                cellCoord.Y >= BoardGameConfig.BoardSize) return;
+            ActivateElementInCell(cellCoord, silent, fast);
         }
 
         public void ActivateElementInCell(CellCoord cellCoord, bool silent, bool fast) {

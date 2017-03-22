@@ -25,5 +25,9 @@ namespace GFMatch3.GameImpl {
             return _board;
         }
 
+        public double GetTimeLeft() {
+            return _time.TimeLeft;
+        }
+
     }
 }

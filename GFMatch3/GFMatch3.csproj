@@ -77,6 +77,7 @@
     <Compile Include="GameCore\GameRenderer.cs" />
     <Compile Include="GameCore\GameScene.cs" />
     <Compile Include="GameCore\GameTransform.cs" />
+    <Compile Include="GameImpl\BEBomb.cs" />
     <Compile Include="GameImpl\BEGem.cs" />
     <Compile Include="GameImpl\BELine.cs" />
     <Compile Include="GameImpl\BoardGameConfig.cs" />
@@ -84,7 +85,6 @@
     <Compile Include="GameImpl\BoardStateActionCondense.cs" />
     <Compile Include="GameImpl\BoardStateActionPlayer.cs" />
     <Compile Include="GameImpl\CellCoord.cs" />
-    <Compile Include="GameImpl\GAAnimation.cs" />
     <Compile Include="GameImpl\GAAnimationPuls.cs" />
     <Compile Include="GameImpl\GABoardElement.cs" />
     <Compile Include="GameImpl\GAColorableOnClick.cs" />
@@ -96,6 +96,7 @@
     <Compile Include="GameImpl\GOTimer.cs" />
     <Compile Include="GameImpl\GRBackground.cs" />
     <Compile Include="GameImpl\GRBoardElement.cs" />
+    <Compile Include="GameImpl\GRBoardElementBomb.cs" />
     <Compile Include="GameImpl\GRBoardElementGem.cs" />
     <Compile Include="GameImpl\GRBoardElementLine.cs" />
     <Compile Include="GameImpl\GRDestroyer.cs" />
@@ -104,10 +105,13 @@
     <Compile Include="GameImpl\SceneBoard.cs" />
     <Compile Include="GameImpl\SceneFinish.cs" />
     <Compile Include="GameImpl\SceneStart.cs" />
+    <Compile Include="GameTools\AnimationRendererFade.cs" />
     <Compile Include="GameTools\AnimationsManager.cs" />
     <Compile Include="GameTools\AnimationTransformToDestroy.cs" />
     <Compile Include="GameTools\AnimationTransformTransition.cs" />
+    <Compile Include="GameTools\GAAnimation.cs" />
     <Compile Include="GameTools\GameMath.cs" />
+    <Compile Include="GameTools\GATimer.cs" />
     <Compile Include="GameTools\IColorable.cs" />
     <Compile Include="GameTools\IRected.cs" />
     <Compile Include="MainWindow.xaml.cs">

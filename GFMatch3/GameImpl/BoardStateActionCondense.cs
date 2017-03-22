@@ -7,7 +7,7 @@ namespace GFMatch3.GameImpl {
             if (AnimationsManager.Instance.HasActiveBlockeableAnimations()) return;
 
             if (!((GOBoard) GameObject).CondenseStep(false)) {
-                GameObject.AddAction(new BorderStateActionActivateMatches());
+                GameObject.AddAction(new BoardStateActionActivateMatches());
                 RemoveFromParent();
             }
         }

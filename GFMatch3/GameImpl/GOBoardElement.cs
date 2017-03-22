@@ -35,7 +35,7 @@ namespace GFMatch3.GameImpl {
                 reverseOffset.X * BoardGameConfig.BoardCellSize,
                 reverseOffset.Y * BoardGameConfig.BoardCellSize,
                 0, 0, 1, 1
-            ), GameTransform.Default, BoardGameConfig.AnimationsCommonSpeed, true);
+            ), GameTransform.Default, BoardGameConfig.AnimationsMoveSpeed, true);
             AnimatablePart.AddAction(
                 animationTransformTransition
             );
