@@ -3,10 +3,10 @@ using GFMatch3.GameCore;
 
 namespace GFMatch3.GameImpl {
     public abstract class GRBoardElement : GameRenderer {
-        protected SolidColorBrush _brush;
+        protected SolidColorBrush Brush;
 
         protected GRBoardElement(int coloredType) {
-            _brush = new SolidColorBrush(BoardGameConfig.ColoredTypes[coloredType]);
+            Brush = new SolidColorBrush(BoardGameConfig.ColoredTypes[coloredType]);
         }
     }
 }

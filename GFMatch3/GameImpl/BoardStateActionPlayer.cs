@@ -3,6 +3,11 @@ using GFMatch3.GameCore;
 using GFMatch3.GameTools;
 
 namespace GFMatch3.GameImpl {
+    /// <summary>
+    /// Простой конечный автомат для состояния доски на основе добавлени/удаления GameAction'ов из объекта доски.
+    /// Активно ожидание действия игрока.
+    /// Переход в состояния: BoardStateActionActivateMatches
+    /// </summary>
     public class BoardStateActionPlayer : GameAction {
         public override void OnUpdate() {
             if (AnimationsManager.Instance.HasActiveBlockeableAnimations()) return;

@@ -5,15 +5,17 @@
       <string>D:\Work\projects\GameForest\Match3\Src\game_forest_match3\GFMatch3\GFMatch3\obj\Debug\GameCore\BasicGameCanvas.g.i.cs</string>
     </ArrayOfString>
     <ArrayOfString>
-      <string>D:\Work\projects\GameForest\Match3\Src\game_forest_match3\GFMatch3\GFMatch3\GameCore\BasicGameCanvas.xaml</string>
-      <string>D:\Work\projects\GameForest\Match3\Src\game_forest_match3\GFMatch3\GFMatch3\GameCore\BasicGameCanvas.xaml.cs</string>
-    </ArrayOfString>
-    <ArrayOfString>
-      <string>D:\Work\projects\GameForest\Match3\Src\game_forest_match3\GFMatch3\GFMatch3\App.xaml</string>
+      <string>d:\work\projects\gameforest\match3\src\game_forest_match3\gfmatch3\gfmatch3\app.xaml</string>
     </ArrayOfString>
     <ArrayOfString>
       <string>D:\Work\projects\GameForest\Match3\Src\game_forest_match3\GFMatch3\GFMatch3\MainWindow.xaml</string>
-      <string>D:\Work\projects\GameForest\Match3\Src\game_forest_match3\GFMatch3\GFMatch3\MainWindow.xaml.cs</string>
+      <string>d:\work\projects\gameforest\match3\src\game_forest_match3\gfmatch3\gfmatch3\mainwindow.xaml.cs</string>
+    </ArrayOfString>
+    <ArrayOfString>
+      <string>d:\work\projects\gameforest\match3\src\game_forest_match3\gfmatch3\gfmatch3\gamecore\basicgamecanvas.xaml</string>
+    </ArrayOfString>
+    <ArrayOfString>
+      <string>d:\work\projects\gameforest\match3\src\game_forest_match3\gfmatch3\gfmatch3\gameimpl\bebomb.cs</string>
     </ArrayOfString>
   </ArrayOfArrayOfString>
 </ArrayOfArrayOfArrayOfString>

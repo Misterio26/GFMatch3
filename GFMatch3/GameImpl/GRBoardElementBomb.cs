@@ -13,10 +13,10 @@ namespace GFMatch3.GameImpl {
         public override void OnDraw(DrawingContext dc) {
             double size = BoardGameConfig.BoardCellSize - 15;
             double sizeHalf = size / 2;
-            var brushColor = _brush.Color;
+            var brushColor = Brush.Color;
             brushColor.A = Color.A;
-            _brush.Color = brushColor;
-            dc.DrawEllipse(_brush, null, new Point(), sizeHalf, sizeHalf);
+            Brush.Color = brushColor;
+            dc.DrawEllipse(Brush, null, new Point(), sizeHalf, sizeHalf);
         }
     }
 }

@@ -1,6 +1,11 @@
 ﻿using System;
 
 namespace GFMatch3.GameCore {
+    /// <summary>
+    /// См. <see cref="GameDirector"/>, <see cref="GameObject"/>.
+    /// Вся логика непосредсвтенно ведется здесь в методе OnUpdate.
+    /// GameAction должен быть обязательно приявзан к GameObject, чтобы работать.
+    /// </summary>
     public class GameAction {
         protected GameObject GameObject => _gameObject;
 

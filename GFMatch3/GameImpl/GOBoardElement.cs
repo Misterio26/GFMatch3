@@ -20,10 +20,8 @@ namespace GFMatch3.GameImpl {
 
         public GOBoardElement(int coloredType, GRBoardElement grBoardElement) {
             _coloredType = coloredType;
-            AddAction(new GABoardElement());
-
             _selectionTransformTransition = new AnimationTransformTransition(GameTransform.Default,
-                GameTransform.Default * 1.35, BoardGameConfig.AnimationsPlayerSpeed);
+                GameTransform.Default * 1.35, BoardGameConfig.AnimationSelectionTime);
             AnimatablePart.Renderer = grBoardElement;
             AddChild(AnimatablePart);
         }
@@ -35,7 +33,7 @@ namespace GFMatch3.GameImpl {
                 reverseOffset.X * BoardGameConfig.BoardCellSize,
                 reverseOffset.Y * BoardGameConfig.BoardCellSize,
                 0, 0, 1, 1
-            ), GameTransform.Default, BoardGameConfig.AnimationsMoveSpeed, true);
+            ), GameTransform.Default, BoardGameConfig.AnimationMoveTime, true);
             AnimatablePart.AddAction(
                 animationTransformTransition
             );

@@ -1,6 +1,7 @@
-﻿using GFMatch3.GameCore;
-
-namespace GFMatch3.GameImpl {
+﻿namespace GFMatch3.GameImpl {
+    /// <summary>
+    /// Элемент на поле - БОНУС ЛИНИЯ.
+    /// </summary>
     public class BELine : GOBoardElement {
 
         private bool _vertical;

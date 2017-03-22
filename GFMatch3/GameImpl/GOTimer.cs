@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Windows;
 using GFMatch3.GameCore;
-using GFMatch3.GameTools;
 
 namespace GFMatch3.GameImpl {
     public class GOTimer : GameObject {
         private double _timeLeft = BoardGameConfig.GameTime;
 
-        public double TimeLeft {
-            get { return _timeLeft; }
-        }
+        public double TimeLeft => _timeLeft;
 
         public GOTimer() {
             Renderer = new GRText(_timeLeft.ToString(), TextAlignment.Center, VerticalAlignment.Top);

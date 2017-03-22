@@ -2,6 +2,11 @@
 using System.Windows.Media;
 
 namespace GFMatch3.GameCore {
+    /// <summary>
+    /// См. <see cref="GameDirector"/>, <see cref="GameObject"/>.
+    /// Отвечает только за отрисовку, никакой логики нести не должен.
+    /// Должен только отображать свое текущее состояние.
+    /// </summary>
     public class GameRenderer {
 
         private bool _hasClip;

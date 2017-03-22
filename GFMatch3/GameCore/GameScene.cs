@@ -1,6 +1,11 @@
 ﻿using System.Windows.Media;
 
 namespace GFMatch3.GameCore {
+    /// <summary>
+    /// См. <see cref="GameDirector"/>.
+    /// Такой корневой контроллер, который можно установить текущим в GameDirector и тогда
+    /// начнут работать все GameObject, которые добавлены в эту сцену.
+    /// </summary>
     public class GameScene {
 
         private GameObject _rootGameObject = new GameObject();

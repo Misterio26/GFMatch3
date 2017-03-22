@@ -4,6 +4,11 @@ using System.Windows;
 using System.Windows.Media;
 
 namespace GFMatch3.GameCore {
+    /// <summary>
+    /// См. <see cref="GameDirector"/>.
+    /// Иерархически представлены на сцене, сами по себе ничего не делают,
+    /// за логику и отрисовку отвечают вложенные GameAction'ы и GameRenderer
+    /// </summary>
     public class GameObject : IComparable<GameObject> {
         public GameTransform Transform = GameTransform.Default;
 

@@ -7,9 +7,13 @@ namespace GFMatch3.GameImpl {
         public const int GameTime = 60;
         public const int MinimalMatchesInRow = 3;
 
-        public const double AnimationsMoveSpeed = 0.15;
-        public const double AnimationsHideSpeed = 0.25;
-        public const double AnimationsPlayerSpeed = 0.1;
+        public const double AnimationMoveTime = 0.15;
+        public const double AnimationHideTime = 0.25;
+        public const double AnimationSelectionTime = 0.1;
+
+        public const double AnimationBombExplosionTime = 0.25;
+
+        public const double BombActivationTime = 0.15;
 
         public const double DestoryerTimeForCell = 0.15;
 

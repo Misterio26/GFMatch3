@@ -18,7 +18,7 @@ namespace GFMatch3.GameImpl {
 
             switch (_direction) {
                 case GameMath.DirectionUp:
-                    dc.DrawGeometry(_brush, null, new PathGeometry(new[] {
+                    dc.DrawGeometry(Brush, null, new PathGeometry(new[] {
                         new PathFigure(new Point(0, -sizeHalf), new[] {
                             new LineSegment(new Point(sizeHalf, -GapHalfSize), false),
                             new LineSegment(new Point(-sizeHalf, -GapHalfSize), false)
@@ -26,7 +26,7 @@ namespace GFMatch3.GameImpl {
                     }));
                     break;
                 case GameMath.DirectionDown:
-                    dc.DrawGeometry(_brush, null, new PathGeometry(new[] {
+                    dc.DrawGeometry(Brush, null, new PathGeometry(new[] {
                         new PathFigure(new Point(0, sizeHalf), new[] {
                             new LineSegment(new Point(sizeHalf, GapHalfSize), false),
                             new LineSegment(new Point(-sizeHalf, GapHalfSize), false)
@@ -34,7 +34,7 @@ namespace GFMatch3.GameImpl {
                     }));
                     break;
                 case GameMath.DirectionLeft:
-                    dc.DrawGeometry(_brush, null, new PathGeometry(new[] {
+                    dc.DrawGeometry(Brush, null, new PathGeometry(new[] {
                         new PathFigure(new Point(-sizeHalf, 0), new[] {
                             new LineSegment(new Point(-GapHalfSize, sizeHalf), false),
                             new LineSegment(new Point(-GapHalfSize, -sizeHalf), false)
@@ -42,7 +42,7 @@ namespace GFMatch3.GameImpl {
                     }));
                     break;
                 case GameMath.DirectionRight:
-                    dc.DrawGeometry(_brush, null, new PathGeometry(new[] {
+                    dc.DrawGeometry(Brush, null, new PathGeometry(new[] {
                         new PathFigure(new Point(sizeHalf, 0), new[] {
                             new LineSegment(new Point(GapHalfSize, sizeHalf), false),
                             new LineSegment(new Point(GapHalfSize, -sizeHalf), false)

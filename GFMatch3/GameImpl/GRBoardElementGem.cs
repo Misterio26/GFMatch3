@@ -13,7 +13,7 @@ namespace GFMatch3.GameImpl {
 //                BoardGameConfig.BoardCellSize / 2 - 10);
             double size = BoardGameConfig.BoardCellSize - 20;
             double sizeHalf = size / 2;
-            dc.DrawRoundedRectangle(_brush, null, new Rect(-sizeHalf, -sizeHalf, size, size), 14, 14);
+            dc.DrawRoundedRectangle(Brush, null, new Rect(-sizeHalf, -sizeHalf, size, size), 14, 14);
         }
     }
 }

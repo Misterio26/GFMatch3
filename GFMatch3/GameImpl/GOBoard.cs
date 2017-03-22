@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows;
 using GFMatch3.GameCore;
 using GFMatch3.GameTools;
 
 namespace GFMatch3.GameImpl {
+    /// <summary>
+    /// Основной игровой элемент - доска.
+    /// Собственно вся основная логика оп игре тут: размещение, уничтожение, заполнение элементов
+    /// </summary>
     public class GOBoard : GameObject {
         private GOBoardElement[,] _cells = new GOBoardElement[BoardGameConfig.BoardSize, BoardGameConfig.BoardSize];
 
@@ -179,11 +182,19 @@ namespace GFMatch3.GameImpl {
             return false;
         }
 
+        /// <summary>
+        /// Именно этот метод производит "активацию" совпавших элементов и создает бонусы.
+        /// Немного перегружен.
+        /// </summary>
+        /// <param name="silent">Если true, то не будет инициировано никаких спец способностей элементов или анимаций,
+        /// а также не будет попыток удалить объекты со сцены, все манипуляции проиcходят чисто на уровне _cell</param>
+        /// <returns>Было ли хоть одно совпадение</returns>
         public bool ActivateMatches(bool silent) {
             // простая активация всех подряд
             List<ActivationEl[]> activateList = new List<ActivationEl[]>();
             ActivateMatchesByDirection(false, activateList);
             ActivateMatchesByDirection(true, activateList);
+
 
             List<ActivationEl> createBonuses = new List<ActivationEl>();
 
@@ -200,9 +211,9 @@ namespace GFMatch3.GameImpl {
                         bool found = false;
                         foreach (ActivationEl cellCoord in cellCoords) {
                             foreach (MovedEl lastMovedElement in _lastMovedElements) {
-                                if (cellCoord.CellCoord == lastMovedElement.toCellCoord) {
+                                if (cellCoord.CellCoord == lastMovedElement.ToCellCoord) {
                                     spawnCoord = cellCoord;
-                                    vertical = (lastMovedElement.toCellCoord - lastMovedElement.fromCellCoord).X == 0;
+                                    vertical = (lastMovedElement.ToCellCoord - lastMovedElement.FromCellCoord).X == 0;
                                     found = true;
                                     break;
                                 }
@@ -235,7 +246,7 @@ namespace GFMatch3.GameImpl {
                 }
             }
 
-            // убираем все, что надо, с проверкой на быстро или нет там где бонусы появились
+            // убираем все, что надо с проверкой на быстро или нет там, где бонусы появились
             foreach (ActivationEl[] cellCoords in activateList) {
                 foreach (ActivationEl cellCoord in cellCoords) {
                     bool fast = false;
@@ -301,7 +312,7 @@ namespace GFMatch3.GameImpl {
             ActivateElementInCell(cellCoord, silent, fast);
         }
 
-        public void ActivateElementInCell(CellCoord cellCoord, bool silent, bool fast) {
+        private void ActivateElementInCell(CellCoord cellCoord, bool silent, bool fast) {
             GOBoardElement boardElement = _cells[cellCoord.X, cellCoord.Y];
             _cells[cellCoord.X, cellCoord.Y] = null;
 
@@ -390,17 +401,6 @@ namespace GFMatch3.GameImpl {
             ActivateElementInCell(cellCoord, false, false);
         }
 
-        private void PrintDebug() {
-            for (int y = 0; y < BoardGameConfig.BoardSize; y++) {
-                for (int x = 0; x < BoardGameConfig.BoardSize; x++) {
-                    Debug.Write(_cells[x, y] == null ? " " : _cells[x, y].ColoredType.ToString());
-                    Debug.Write(" ");
-                }
-                Debug.WriteLine("");
-            }
-            Debug.WriteLine("");
-        }
-
         private class ActivationEl {
             public readonly CellCoord CellCoord;
             public readonly GOBoardElement BoardElement;
@@ -412,12 +412,12 @@ namespace GFMatch3.GameImpl {
         }
 
         private class MovedEl {
-            public readonly CellCoord toCellCoord;
-            public readonly CellCoord fromCellCoord;
+            public readonly CellCoord ToCellCoord;
+            public readonly CellCoord FromCellCoord;
 
             public MovedEl(CellCoord toCellCoord, CellCoord fromCellCoord) {
-                this.toCellCoord = toCellCoord;
-                this.fromCellCoord = fromCellCoord;
+                ToCellCoord = toCellCoord;
+                FromCellCoord = fromCellCoord;
             }
         }
     }

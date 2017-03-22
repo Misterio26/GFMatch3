@@ -1,4 +1,7 @@
 ﻿namespace GFMatch3.GameTools {
+    /// <summary>
+    /// В осоновном введен для отслеживания наличия блокирующих анимаций.
+    /// </summary>
     public class AnimationsManager {
         public static readonly AnimationsManager Instance = new AnimationsManager();
 

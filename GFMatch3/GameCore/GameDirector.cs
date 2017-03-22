@@ -3,9 +3,17 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 
 namespace GFMatch3.GameCore {
+    /// <summary>
+    /// Ядро простого движка.
+    /// GameDirector - содержет и взаимодействует с одной активной GameScene.
+    /// GameScene - содержет и взаимодействует с иерархией GameObject.
+    /// GameObject - содержет и взаимодействует сподмножеством GameObject,
+    /// а также набор GameAction и один GameRenderer.
+    /// Именно нужные методы GameDirector'а вызываются из системного интерфейса,
+    /// чтобы активировать и оперировать игрой (<see cref="BasicGameCanvas"/>).
+    /// </summary>
     public class GameDirector {
         /// <summary>
         /// Разрешение по ширине, по которому можно рисовать и опереировать с графикой.
@@ -14,7 +22,7 @@ namespace GFMatch3.GameCore {
         /// </summary>
         public const int AnchoredScreenWidth = 1920;
 
-        // здесь хардкод "GFMatch3.GameImpl.SceneStart", в это проекте не существенно
+        // здесь хардкод "GFMatch3.GameImpl.SceneStart", в этом проекте несущественно
         public static readonly GameDirector Instance = new GameDirector("GFMatch3.GameImpl.SceneStart");
 
         private readonly String _startupStageClassRef;

@@ -1,6 +1,5 @@
 ﻿using System;
 using GFMatch3.GameCore;
-using GFMatch3.GameImpl;
 
 namespace GFMatch3.GameTools {
     public class AnimationTransformToDestroy : GAAnimation {

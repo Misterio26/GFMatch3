@@ -11,7 +11,8 @@
     <AssemblyName>GFMatch3</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}
+        </ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
@@ -80,28 +81,26 @@
     <Compile Include="GameImpl\BEBomb.cs" />
     <Compile Include="GameImpl\BEGem.cs" />
     <Compile Include="GameImpl\BELine.cs" />
-    <Compile Include="GameImpl\BoardGameConfig.cs" />
     <Compile Include="GameImpl\BoardStateActionActivateMatches.cs" />
     <Compile Include="GameImpl\BoardStateActionCondense.cs" />
     <Compile Include="GameImpl\BoardStateActionPlayer.cs" />
     <Compile Include="GameImpl\CellCoord.cs" />
-    <Compile Include="GameImpl\GAAnimationPuls.cs" />
-    <Compile Include="GameImpl\GABoardElement.cs" />
-    <Compile Include="GameImpl\GAColorableOnClick.cs" />
-    <Compile Include="GameImpl\GOBackground.cs" />
     <Compile Include="GameImpl\GOBoard.cs" />
     <Compile Include="GameImpl\GOBoardElement.cs" />
     <Compile Include="GameImpl\GODestroyer.cs" />
     <Compile Include="GameImpl\GOScore.cs" />
     <Compile Include="GameImpl\GOTimer.cs" />
-    <Compile Include="GameImpl\GRBackground.cs" />
     <Compile Include="GameImpl\GRBoardElement.cs" />
     <Compile Include="GameImpl\GRBoardElementBomb.cs" />
     <Compile Include="GameImpl\GRBoardElementGem.cs" />
     <Compile Include="GameImpl\GRBoardElementLine.cs" />
     <Compile Include="GameImpl\GRDestroyer.cs" />
-    <Compile Include="GameImpl\GRText.cs" />
-    <Compile Include="GameImpl\ResourcesManager.cs" />
+    <Compile Include="GameImpl\Helpers\GAColorableOnClick.cs" />
+    <Compile Include="GameImpl\Helpers\GOBackground.cs" />
+    <Compile Include="GameImpl\Helpers\GRBackground.cs" />
+    <Compile Include="GameImpl\Helpers\GRText.cs" />
+    <Compile Include="GameImpl\Managers\BoardGameConfig.cs" />
+    <Compile Include="GameImpl\Managers\ResourcesManager.cs" />
     <Compile Include="GameImpl\SceneBoard.cs" />
     <Compile Include="GameImpl\SceneFinish.cs" />
     <Compile Include="GameImpl\SceneStart.cs" />
@@ -151,11 +150,11 @@
     <Resource Include="Assets\background.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+         Other similar extension points exist, see Microsoft.Common.targets.
+    <Target Name="BeforeBuild">
+    </Target>
+    <Target Name="AfterBuild">
+    </Target>
+    -->
 </Project>
