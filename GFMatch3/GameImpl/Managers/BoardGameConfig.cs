@@ -17,7 +17,7 @@ namespace GFMatch3.GameImpl {
 
         public const double DestoryerTimeForCell = 0.15;
 
-        public static readonly Color[] ColoredTypes = new Color[]
+        public static readonly Color[] ColoredTypes =
             {Colors.Red, Colors.Purple, Colors.Gold, Colors.ForestGreen, Colors.DeepSkyBlue};
     }
 }

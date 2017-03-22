@@ -34,9 +34,7 @@ namespace GFMatch3.GameImpl {
             for (int x = 0; x < BoardGameConfig.BoardSize; x++) {
                 for (int y = 0; y < BoardGameConfig.BoardSize; y++) {
                     GOBoardElement boardEl = new BEGem(_random.Next(BoardGameConfig.ColoredTypes.Length));
-                    boardEl.Transform.X = BoardGameConfig.BoardCellSize / 2 + BoardGameConfig.BoardCellSize * x;
-                    boardEl.Transform.Y = BoardGameConfig.BoardCellSize / 2 + BoardGameConfig.BoardCellSize * y;
-                    boardEl.Transform.Z = x + y;
+                    boardEl.Transform = ApplyCellToTransform(boardEl.Transform, new CellCoord(x, y));
                     _cells[x, y] = boardEl;
                 }
             }
@@ -71,6 +69,7 @@ namespace GFMatch3.GameImpl {
         }
 
         public bool SelectCell(CellCoord cellCoord) {
+            if (!IsCellInRange(cellCoord)) return false;
             GOBoardElement curBoardElement = _cells[cellCoord.X, cellCoord.Y];
 
             if (_hasSelectedCell) {
@@ -285,7 +284,8 @@ namespace GFMatch3.GameImpl {
                             for (int i = previousTypeStartPosition; i < s; i++) {
                                 cellCoords[i - previousTypeStartPosition] = new ActivationEl(
                                     new CellCoord(swapSF ? f : i, swapSF ? i : f),
-                                    _cells[swapSF ? f : i, swapSF ? i : f]);
+                                    _cells[swapSF ? f : i, swapSF ? i : f]
+                                );
                             }
                         }
                         matchesCounter = 1;
@@ -300,15 +300,15 @@ namespace GFMatch3.GameImpl {
                     activateList.Add(cellCoords);
                     for (int i = previousTypeStartPosition; i < BoardGameConfig.BoardSize; i++) {
                         cellCoords[i - previousTypeStartPosition] = new ActivationEl(
-                            new CellCoord(swapSF ? f : i, swapSF ? i : f), _cells[swapSF ? f : i, swapSF ? i : f]);
+                            new CellCoord(swapSF ? f : i, swapSF ? i : f), _cells[swapSF ? f : i, swapSF ? i : f]
+                        );
                     }
                 }
             }
         }
 
         public void TryActivateElementInCell(CellCoord cellCoord, bool silent, bool fast) {
-            if (cellCoord.X < 0 || cellCoord.X >= BoardGameConfig.BoardSize || cellCoord.Y < 0 ||
-                cellCoord.Y >= BoardGameConfig.BoardSize) return;
+            if (!IsCellInRange(cellCoord)) return;
             ActivateElementInCell(cellCoord, silent, fast);
         }
 
@@ -341,9 +341,7 @@ namespace GFMatch3.GameImpl {
                         }
                         GOBoardElement boardEl = _cells[x, y];
                         if (boardEl != null) {
-                            boardEl.Transform.X = BoardGameConfig.BoardCellSize / 2 + BoardGameConfig.BoardCellSize * x;
-                            boardEl.Transform.Y = BoardGameConfig.BoardCellSize / 2 + BoardGameConfig.BoardCellSize * y;
-                            boardEl.Transform.Z = x + y;
+                            boardEl.Transform = ApplyCellToTransform(boardEl.Transform, new CellCoord(x, y));
 
                             if (!silent) {
                                 _lastMovedElements.Add(new MovedEl(new CellCoord(x, y), new CellCoord(x, y - 1)));
@@ -366,39 +364,62 @@ namespace GFMatch3.GameImpl {
         public void SpawnDestroyers(CellCoord cellCoord, bool vertical, int coloredType) {
             GODestroyer destroyer1 = new GODestroyer(coloredType,
                 vertical ? GameMath.DirectionUp : GameMath.DirectionLeft);
-            destroyer1.Transform.X = BoardGameConfig.BoardCellSize / 2 + BoardGameConfig.BoardCellSize * cellCoord.X;
-            destroyer1.Transform.Y = BoardGameConfig.BoardCellSize / 2 + BoardGameConfig.BoardCellSize * cellCoord.Y;
+            destroyer1.Transform = ApplyCellToTransform(destroyer1.Transform, cellCoord);
             destroyer1.Transform.Z = 100;
             AddChild(destroyer1);
 
             GODestroyer destroyer2 = new GODestroyer(coloredType,
                 vertical ? GameMath.DirectionDown : GameMath.DirectionRight);
-            destroyer2.Transform.X = BoardGameConfig.BoardCellSize / 2 + BoardGameConfig.BoardCellSize * cellCoord.X;
-            destroyer2.Transform.Y = BoardGameConfig.BoardCellSize / 2 + BoardGameConfig.BoardCellSize * cellCoord.Y;
+            destroyer2.Transform = ApplyCellToTransform(destroyer2.Transform, cellCoord);
             destroyer2.Transform.Z = 100;
             AddChild(destroyer2);
         }
 
         private void TrySpawnElement(CellCoord cellCoord, GOBoardElement boardElement) {
+            if (!IsCellInRange(cellCoord)) return;
             if (_cells[cellCoord.X, cellCoord.Y] != null) return;
             _cells[cellCoord.X, cellCoord.Y] = boardElement;
             AddChild(boardElement);
 
-            boardElement.Transform.X = BoardGameConfig.BoardCellSize / 2 + BoardGameConfig.BoardCellSize * cellCoord.X;
-            boardElement.Transform.Y = BoardGameConfig.BoardCellSize / 2 + BoardGameConfig.BoardCellSize * cellCoord.Y;
-            boardElement.Transform.Z = cellCoord.X + cellCoord.Y;
+            boardElement.Transform = ApplyCellToTransform(boardElement.Transform, cellCoord);
         }
 
         public void TryActivateUnderPoint(Point point) {
-            CellCoord cellCoord = new CellCoord(
+            CellCoord cellCoord = PointToCell(point);
+            if (!IsCellInRange(cellCoord)) return;
+            ActivateElementInCell(cellCoord, false, false);
+        }
+
+        private GameTransform ApplyCellToTransform(GameTransform gameTransform, CellCoord cellCoord) {
+            Point point = CellToPoint(cellCoord);
+            gameTransform.X = point.X;
+            gameTransform.Y = point.Y;
+            gameTransform.Z = cellCoord.X + cellCoord.Y;
+            return gameTransform;
+        }
+
+        public CellCoord PointToCell(Point point) {
+            return new CellCoord(
                 (int) Math.Floor(point.X / BoardGameConfig.BoardCellSize),
                 (int) Math.Floor(point.Y / BoardGameConfig.BoardCellSize)
             );
-            if (cellCoord.X < 0 || cellCoord.X >= BoardGameConfig.BoardSize
-                || cellCoord.Y < 0 || cellCoord.Y >= BoardGameConfig.BoardSize) {
-                return;
-            }
-            ActivateElementInCell(cellCoord, false, false);
+        }
+
+        private Point CellToPoint(CellCoord cellCoord) {
+            return new Point(
+                BoardGameConfig.BoardCellSize / 2 + BoardGameConfig.BoardCellSize * cellCoord.X,
+                BoardGameConfig.BoardCellSize / 2 + BoardGameConfig.BoardCellSize * cellCoord.Y
+            );
+        }
+
+        private bool IsCellInRange(CellCoord cellCoord) {
+            return cellCoord.X >= 0 && cellCoord.X < BoardGameConfig.BoardSize &&
+                   cellCoord.Y >= 0 && cellCoord.Y < BoardGameConfig.BoardSize;
+        }
+
+        public bool IsPointInRange(Point point) {
+            return point.X >= 0 && point.X < BoardGameConfig.BoardSize * BoardGameConfig.BoardCellSize &&
+                   point.Y >= 0 && point.Y < BoardGameConfig.BoardSize * BoardGameConfig.BoardCellSize;
         }
 
         private class ActivationEl {
